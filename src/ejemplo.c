@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lab1.h"
+#include "main.h"
 
 void myPrintHelloMake(void) {
 

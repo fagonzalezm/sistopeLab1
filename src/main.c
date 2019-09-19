@@ -1,9 +1,56 @@
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "lab1.h"
+#include "main.h"
+
+void pipeline(){
+    pid_t pid1, pid2, pid3, pid4, pid5;
+    int  status1, status2, status3, status4, status5;
+
+    char*argvConvolution[] ={"convolution",NULL};
+    char*argvRectification[] ={"rectification",NULL};
+    char*argvPooling[] ={"pooling",NULL};
+    char*argvClassifier[] ={"classifier",NULL};
+    char*argvResultsWriter[] ={"resultsWriter",NULL};
+
+    if( (pid1=fork()) == 0 ){
+        if( (pid2=fork()) == 0 ){
+            if( (pid3=fork()) == 0 ){
+                if( (pid4=fork()) == 0 ){
+                    if( (pid5=fork()) == 0 ){
+                        //Results Writer
+                        execvp("bin/resultsWriter",argvResultsWriter);
+                    }
+                    else{
+                        //Classifier
+                        execvp("bin/classifier",argvClassifier);
+                    }
+                }
+                else{
+                    //Pooling
+                    execvp("bin/pooling",argvConvolution);
+                }
+            }
+            else{
+                //Rectification
+                execvp("bin/rectification",argvRectification);
+            }
+        }
+        else{
+            //Convolution
+            execvp("bin/convolution",argvConvolution);
+        }
+    }
+    else{
+        //Main
+        wait(&status1);
+        printf("FIN\n");
+    }
+}
 
 int main(int argc, char **argv){
     int cValue=-1;
@@ -60,24 +107,26 @@ int main(int argc, char **argv){
     for (index = optind; index < argc; index++){
         printf("No hay bandera para el argumento %s\n", argv[index]);
     }
+    FILE * file;
     if(cValue == -1){
         fprintf (stderr, "Se debe ingresar la cantidad de imágenes usando la bandera -c\n");
         abort();
     }
-    if(mValue == NULL){
+    else if(mValue == NULL){
         fprintf (stderr, "Se debe ingresar el nombre del archivo de la máscara del filtro usando la bandera -m\n");
         abort();
     }
-    if(nValue == -1){
+    else if(nValue == -1){
         fprintf (stderr, "Se debe ingresar el umbral para la clasificación\n");
         abort();
     }
-    FILE * file;
-    file = fopen (mValue, "r");
-    if(file == NULL){
+    else if( (file = fopen (mValue, "r")) == NULL){
         fprintf (stderr, "El archivo %s no existe\n", mValue);
+        fclose(file);
         abort();
     }
-    fclose(file);
+    else{
+        pipeline();
+    }
     return 0;
 }
