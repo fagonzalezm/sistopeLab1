@@ -7,49 +7,153 @@
 #include <string.h>
 #include "main.h"
 
+#define READ 0
+#define WRITE 1
+
 void pipeline(){
     pid_t pid1, pid2, pid3, pid4, pid5;
     int  status1, status2, status3, status4, status5;
 
-    char*argvConvolution[] ={"convolution",NULL};
-    char*argvRectification[] ={"rectification",NULL};
-    char*argvPooling[] ={"pooling",NULL};
-    char*argvClassifier[] ={"classifier",NULL};
-    char*argvResultsWriter[] ={"resultsWriter",NULL};
+    char * argvConvolution[] ={"convolution",NULL};
+    char * argvRectification[] ={"rectification",NULL};
+    char * argvPooling[] ={"pooling",NULL};
+    char * argvClassifier[] ={"classifier",NULL};
+    char * argvResultsWriter[] ={"resultsWriter",NULL};
+
+    int * pipe1 = (int *)malloc(2*sizeof(int));
+    int * pipe2 = (int *)malloc(2*sizeof(int));
+    int * pipe3 = (int *)malloc(2*sizeof(int));
+    int * pipe4 = (int *)malloc(2*sizeof(int));
+    int * pipe5 = (int *)malloc(2*sizeof(int));
+
+    char word[6];
+
+    pipe(pipe1);
+    pipe(pipe2);
+    pipe(pipe3);
+    pipe(pipe4);
+    pipe(pipe5);
 
     if( (pid1=fork()) == 0 ){
         if( (pid2=fork()) == 0 ){
             if( (pid3=fork()) == 0 ){
                 if( (pid4=fork()) == 0 ){
                     if( (pid5=fork()) == 0 ){
+                        dup2(pipe5[READ],STDIN_FILENO);
+
+                        close(pipe1[READ]);
+                        close(pipe1[WRITE]);
+                        close(pipe2[READ]);
+                        close(pipe2[WRITE]);
+                        close(pipe3[READ]);
+                        close(pipe3[WRITE]);
+                        close(pipe4[READ]);
+                        close(pipe4[WRITE]);
+                        close(pipe5[WRITE]);
+
                         //Results Writer
                         execvp("bin/resultsWriter",argvResultsWriter);
                     }
                     else{
+                        dup2(pipe4[READ],STDIN_FILENO);
+                        dup2(pipe5[WRITE],STDOUT_FILENO);
+
+                        close(pipe1[READ]);
+                        close(pipe1[WRITE]);
+                        close(pipe2[READ]);
+                        close(pipe2[WRITE]);
+                        close(pipe3[READ]);
+                        close(pipe3[WRITE]);
+                        close(pipe4[WRITE]);
+                        close(pipe5[READ]);
+
                         //Classifier
                         execvp("bin/classifier",argvClassifier);
                     }
                 }
                 else{
+                    dup2(pipe3[READ],STDIN_FILENO);
+                    dup2(pipe4[WRITE],STDOUT_FILENO);
+
+                    close(pipe1[READ]);
+                    close(pipe1[WRITE]);
+                    close(pipe2[READ]);
+                    close(pipe2[WRITE]);
+                    close(pipe3[WRITE]);
+                    close(pipe4[READ]);
+                    close(pipe5[READ]);
+                    close(pipe5[WRITE]);
+                    
                     //Pooling
                     execvp("bin/pooling",argvConvolution);
                 }
             }
             else{
+                dup2(pipe2[READ],STDIN_FILENO);
+                dup2(pipe3[WRITE],STDOUT_FILENO);
+
+                close(pipe1[READ]);
+                close(pipe1[WRITE]);
+                close(pipe2[WRITE]);
+                close(pipe3[READ]);
+                close(pipe4[READ]);
+                close(pipe4[WRITE]);
+                close(pipe5[READ]);
+                close(pipe5[WRITE]);
+
                 //Rectification
                 execvp("bin/rectification",argvRectification);
             }
         }
         else{
+            dup2(pipe1[READ],STDIN_FILENO);
+            dup2(pipe2[WRITE],STDOUT_FILENO);
+
+            close(pipe1[WRITE]);
+            close(pipe2[READ]);
+            close(pipe3[READ]);
+            close(pipe3[WRITE]);
+            close(pipe4[READ]);
+            close(pipe4[WRITE]);
+            close(pipe5[READ]);
+            close(pipe5[WRITE]);
             //Convolution
             execvp("bin/convolution",argvConvolution);
         }
     }
     else{
+        word[0] = '1';
+        word[1]= '\0';
+        printf("WORD inicial: %s\n", word);
+        dup2(pipe1[WRITE],STDOUT_FILENO);
+
+        close(pipe1[READ]);
+        close(pipe2[READ]);
+        close(pipe2[WRITE]);
+        close(pipe3[READ]);
+        close(pipe3[WRITE]);
+        close(pipe4[READ]);
+        close(pipe4[WRITE]);
+        close(pipe5[READ]);
+        close(pipe5[WRITE]);
+
         //Main
+
+        
+        write(STDOUT_FILENO, word, 6);
         wait(&status1);
-        printf("FIN\n");
     }
+    free(pipe1);
+    pipe1 = NULL;
+    free(pipe2);
+    pipe2 = NULL;
+    free(pipe3);
+    pipe3 = NULL;
+    free(pipe4);
+    pipe4 = NULL;
+    free(pipe5);
+    pipe5 = NULL;
+
 }
 
 int main(int argc, char **argv){

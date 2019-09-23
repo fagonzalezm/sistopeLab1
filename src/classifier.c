@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <sys/wait.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char **argv){
     //Code
-    printf("4\n");
+    char word[6];
+    read(STDIN_FILENO, word, 6);
+    strcat(word,"5");
+    write(STDOUT_FILENO, word, 6);
 
     wait(NULL);
     //Send Results
