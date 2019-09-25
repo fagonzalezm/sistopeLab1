@@ -3,11 +3,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include "main.h"
 
 int main(int argc, char **argv){
-    char word[6];
-    read(STDIN_FILENO, word, 6);
-    strcat(word,"6");
-    printf("WORD final: %s\n", word);
+    words palabra;
+    read(STDIN_FILENO, &palabra, sizeof(words));
+    strcat(palabra.word,"6");
+    printf("WORD final: %s\n", palabra.word);
     return 0;
 }

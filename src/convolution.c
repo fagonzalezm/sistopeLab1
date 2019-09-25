@@ -3,13 +3,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include "main.h"
 
 int main(int argc, char **argv){
     //Code
-    char word[6];
-    read(STDIN_FILENO, word, 6);
-    strcat(word,"2");
-    write(STDOUT_FILENO, word, 6);
+    words palabra;
+    read(STDIN_FILENO, &palabra, sizeof(words));
+    strcat(palabra.word,"2");
+    write(STDOUT_FILENO, &palabra, sizeof(words));
     wait(NULL);
     //Send Results
     return 0;

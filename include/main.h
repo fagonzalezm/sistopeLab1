@@ -1,6 +1,5 @@
-struct parEnteros {
-	int a;
-	int b;
-} ;
+typedef struct words {
+	char word[100];
+}words;
 
 void myPrintHelloMake(void);

@@ -26,7 +26,7 @@ void pipeline(){
     int * pipe4 = (int *)malloc(2*sizeof(int));
     int * pipe5 = (int *)malloc(2*sizeof(int));
 
-    char word[6];
+    words palabra;
 
     pipe(pipe1);
     pipe(pipe2);
@@ -122,9 +122,9 @@ void pipeline(){
         }
     }
     else{
-        word[0] = '1';
-        word[1]= '\0';
-        printf("WORD inicial: %s\n", word);
+        palabra.word[0]='1';
+        palabra.word[1]='\0';     
+        printf("WORD inicial: %s\n", palabra.word);
         dup2(pipe1[WRITE],STDOUT_FILENO);
 
         close(pipe1[READ]);
@@ -140,7 +140,7 @@ void pipeline(){
         //Main
 
         
-        write(STDOUT_FILENO, word, 6);
+        write(STDOUT_FILENO, &palabra, sizeof(words));
         wait(&status1);
     }
     free(pipe1);
@@ -153,6 +153,8 @@ void pipeline(){
     pipe4 = NULL;
     free(pipe5);
     pipe5 = NULL;
+    //free(palabra);
+    //palabra = NULL;
 
 }
 
