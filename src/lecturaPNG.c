@@ -56,6 +56,9 @@ int main ()
     //Se obtiene la cantidad de bytes necesarios para contener una fila de una imagen.
     rowbytes = png_get_rowbytes (png_ptr, info_ptr);
     printf ("Row bytes = %d\n", rowbytes);
+
+    matrizPix.m = alto;
+    matrizPix.n = ancho;
     //Se recorren los punteros de la matriz pixel a pixel y se guardan en una estructura.
     for (x = 0; x < alto; x++) {
 		int y;
