@@ -10,15 +10,27 @@
 #define READ 0
 #define WRITE 1
 
-void pipeline(){
+
+void pipeline(int cValue, char * mValue, int nValue, int bFlag){
     pid_t pid1, pid2, pid3, pid4, pid5;
     int  status1, status2, status3, status4, status5;
 
-    char * argvConvolution[] ={"convolution",NULL};
-    char * argvRectification[] ={"rectification",NULL};
-    char * argvPooling[] ={"pooling",NULL};
-    char * argvClassifier[] ={"classifier",NULL};
-    char * argvResultsWriter[] ={"resultsWriter",NULL};
+    char bFlagStr[2];
+    sprintf(bFlagStr, "%d", bFlag);
+    char nValueStr[3];
+    sprintf(nValueStr, "%d", nValue);
+    char cValueStr[3];
+    sprintf(cValueStr, "%d", cValue);
+    char mValueStr[100];
+    strcpy(mValueStr, mValue);
+
+    printf("mValueStr: %s\n",mValueStr);
+    printf("mValue: %s\n",mValue);
+    char * argvConvolution[] ={"convolution","-c",cValueStr, NULL};
+    char * argvRectification[] ={"rectification","-c",cValueStr, NULL};
+    char * argvPooling[] ={"pooling","-c",cValueStr, NULL};
+    char * argvClassifier[] ={"classifier","-n", nValueStr,"-c",cValueStr, NULL};
+    char * argvResultsWriter[] ={"resultsWriter","-b", bFlagStr,"-c",cValueStr, NULL};
 
     int * pipe1 = (int *)malloc(2*sizeof(int));
     int * pipe2 = (int *)malloc(2*sizeof(int));
@@ -120,17 +132,8 @@ void pipeline(){
             execvp("bin/convolution",argvConvolution);
         }
     }
-    else{     
-        //Ejemplo matriz 6x6  
-        pixels.m = 3;
-        pixels.n = 6;
-        int i = 0;
-        int j = 0;
-        for(i=0;i<pixels.m;i++){
-            for(j=0;j<pixels.n;j++){
-                (pixels.matrix)[i][j]=i-j;
-            }
-        }
+    else{
+        
         dup2(pipe1[WRITE],STDOUT_FILENO);
 
         close(pipe1[READ]);
@@ -143,22 +146,57 @@ void pipeline(){
         close(pipe5[READ]);
         close(pipe5[WRITE]);
 
-        //Main
+        //Ejemplo leyendo archivo
+        FILE * fp;
+        char aux[20];
+        char index[14];
+        char element[20];
+        char newline;
+        strcpy(aux, "imagen_");
+        for(int i = 0; i<cValue; i++){
+            int k = 0;
+            int l = 0;
+            int m = 0;
+            int n = 0;
 
-        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
-        wait(&status1);
+            sprintf(index,"%d",i+1);
+            strcat(aux,index);
+            fp = fopen(aux, "r");
+            int saltoDeLinea = 0;
+            while(!feof(fp)){
+                fscanf(fp,"%s", element);
+                (pixels.matrix)[k][l] = atoi(element);
+                l = l + 1;
+                newline = fgetc(fp);
+                if(saltoDeLinea == 0){
+                    n = n + 1;
+                }
+                if(newline == '\n'){
+                    l = 0;
+                    k = k + 1;
+                    m = m + 1;  
+                    saltoDeLinea = 1;
+                }
+
+            }
+
+            pixels.m = m;
+            pixels.n = n;
+            for(int i = 0; i<pixels.m;i++){
+                for(int j = 0; j<pixels.n;j++){
+                }
+            }
+            
+            strcpy(aux, "imagen_");
+            fclose(fp);
+            write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+            pixels.m = 0;
+            pixels.n = 0;
+            
+        }
     }
 
-    //Se libera memoria
-    //int i = 0;
-    //for(i=0;i<3;i++){
-    //    free((pixels.matrix)[i]);
-    //    (pixels.matrix)[i]=NULL;
-    //}
-    //free(pixels);
-    //pixels = NULL;
-
-
+    wait(&status1);
     free(pipe1);
     pipe1 = NULL;
     free(pipe2);
@@ -246,7 +284,7 @@ int main(int argc, char **argv){
         abort();
     }
     else{
-        pipeline();
+        pipeline(cValue, mValue, nValue, bFlag);
     }
     return 0;
 }

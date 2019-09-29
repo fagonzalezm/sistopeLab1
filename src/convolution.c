@@ -1,3 +1,5 @@
+#include <sys/types.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -6,12 +8,32 @@
 #include "main.h"
 
 int main(int argc, char **argv){
-    //Code
-    //words palabra;
+    int cValue = 0;
+    char *mValue = NULL;
+    int flag;
+    while( (flag = getopt(argc, argv, "c:")) != -1){
+        switch (flag){
+        case 'c':
+            cValue = atoi(optarg);
+            break;
+        //case 'm':
+        //    mValue = optarg;
+        //    break;
+        default:
+            abort();
+        }
+    }
+
     pixelMatrix pixels;
-    read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-    write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+
+    for(int i = 0; i<cValue;i++){
+        read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
+
+
+        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        
+    }
+    
     wait(NULL);
-    //Send Results
     return 0;
 }

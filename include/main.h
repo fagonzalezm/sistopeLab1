@@ -5,7 +5,7 @@ typedef struct words {
 typedef struct pixelMatrix{
 	int n;
 	int m;
-	int matrix[1200][1200];
+	int matrix[20][20];
 }pixelMatrix;
 
 void myPrintHelloMake(void);

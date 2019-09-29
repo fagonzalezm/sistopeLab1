@@ -6,20 +6,32 @@
 #include "main.h"
 
 int main(int argc, char **argv){
-    //Code
-    //words palabra;
-    pixelMatrix pixels;
-    read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-    for(int i = 0; i<pixels.m; i++){
-        for(int j = 0; j<pixels.n; j++){
-            if((pixels.matrix)[i][j]<0){
-                (pixels.matrix)[i][j] = 0;
-            }
+    int cValue = 0;
+    int flag;
+    while( (flag = getopt(argc, argv, "c:")) != -1){
+        switch (flag)        {
+        case 'c':
+            cValue = atoi(optarg);
+            break;
+        
+        default:
+            abort();
         }
     }
-    write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
 
+    pixelMatrix pixels;
+
+    for(int i= 0; i<cValue; i++){
+        read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
+        for(int i = 0; i<pixels.m; i++){
+            for(int j = 0; j<pixels.n; j++){
+                if((pixels.matrix)[i][j]<0){
+                    (pixels.matrix)[i][j] = 0;
+                }
+            }
+        }
+        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+    }
     wait(NULL);
-    //Send Results
     return 0;
 }
