@@ -7,10 +7,10 @@
 
 int main(int argc, char **argv){
     //Code
-    words palabra;
-    read(STDIN_FILENO, &palabra, sizeof(words));
-    strcat(palabra.word,"5");
-    write(STDOUT_FILENO, &palabra, sizeof(words));
+    //words palabra;
+    pixelMatrix pixels;
+    read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
+    write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
 
     wait(NULL);
     //Send Results

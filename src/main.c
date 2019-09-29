@@ -26,8 +26,7 @@ void pipeline(){
     int * pipe4 = (int *)malloc(2*sizeof(int));
     int * pipe5 = (int *)malloc(2*sizeof(int));
 
-    words palabra;
-
+    pixelMatrix pixels;
     pipe(pipe1);
     pipe(pipe2);
     pipe(pipe3);
@@ -121,10 +120,17 @@ void pipeline(){
             execvp("bin/convolution",argvConvolution);
         }
     }
-    else{
-        palabra.word[0]='1';
-        palabra.word[1]='\0';     
-        printf("WORD inicial: %s\n", palabra.word);
+    else{     
+        //Ejemplo matriz 6x6  
+        pixels.m = 3;
+        pixels.n = 6;
+        int i = 0;
+        int j = 0;
+        for(i=0;i<pixels.m;i++){
+            for(j=0;j<pixels.n;j++){
+                (pixels.matrix)[i][j]=i-j;
+            }
+        }
         dup2(pipe1[WRITE],STDOUT_FILENO);
 
         close(pipe1[READ]);
@@ -139,10 +145,20 @@ void pipeline(){
 
         //Main
 
-        
-        write(STDOUT_FILENO, &palabra, sizeof(words));
+        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
         wait(&status1);
     }
+
+    //Se libera memoria
+    //int i = 0;
+    //for(i=0;i<3;i++){
+    //    free((pixels.matrix)[i]);
+    //    (pixels.matrix)[i]=NULL;
+    //}
+    //free(pixels);
+    //pixels = NULL;
+
+
     free(pipe1);
     pipe1 = NULL;
     free(pipe2);
@@ -153,8 +169,6 @@ void pipeline(){
     pipe4 = NULL;
     free(pipe5);
     pipe5 = NULL;
-    //free(palabra);
-    //palabra = NULL;
 
 }
 

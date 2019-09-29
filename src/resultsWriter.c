@@ -6,9 +6,20 @@
 #include "main.h"
 
 int main(int argc, char **argv){
-    words palabra;
-    read(STDIN_FILENO, &palabra, sizeof(words));
-    strcat(palabra.word,"6");
-    printf("WORD final: %s\n", palabra.word);
+    //words palabra;
+    printf("AAAA K RABIA\n");
+    pixelMatrix pixels;
+    read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
+
+
+
+
+
+    for(int i=0;i<pixels.m;i++){
+        for(int j=0;j<pixels.n;j++){
+            printf("%d ",(pixels.matrix)[i][j]);
+        }
+        printf("\n");
+    }
     return 0;
 }
