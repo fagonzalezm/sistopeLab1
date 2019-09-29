@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <main.h>
+#include "main.h"
 
 int main ()
 {
