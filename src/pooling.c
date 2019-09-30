@@ -20,73 +20,74 @@ int main(int argc, char **argv){
         }
     }
 
-    pixelMatrix pixels;
 
     for(int i= 0; i<cValue; i++){
-        read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
+        //pixelMatrix pixels;
+        floatPixelMatrix floatPixels;
+        read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
         
-        /*if(pixels.m%3==1){
-            for(int i = 0; i<pixels.n; i++){
-                (pixels.matrix)[pixels.m+1][i]=0;
-                (pixels.matrix)[pixels.m+2][i]=0;
+        if(floatPixels.m%3==1){
+            for(int i = 0; i<floatPixels.n; i++){
+                (floatPixels.matrix)[floatPixels.m+1][i]=0.0;
+                (floatPixels.matrix)[floatPixels.m+2][i]=0.0;
             }
-            pixels.m = pixels.m + 2;
+            floatPixels.m = floatPixels.m + 2;
         }
-        else if(pixels.m%3==2){
-            for(int i = 0; i<pixels.n; i++){
-                (pixels.matrix)[pixels.m+1][i]=0;
+        else if(floatPixels.m%3==2){
+            for(int i = 0; i<floatPixels.n; i++){
+                (floatPixels.matrix)[floatPixels.m+1][i]=0.0;
             }
-            pixels.m = pixels.m + 1;
+            floatPixels.m = floatPixels.m + 1;
         }
-        else if(pixels.n%3==1){
-            for(int i = 0; i<pixels.m; i++){
-                (pixels.matrix)[i][pixels.n+1]=0;
-                (pixels.matrix)[i][pixels.n+2]=0;
+        else if(floatPixels.n%3==1){
+            for(int i = 0; i<floatPixels.m; i++){
+                (floatPixels.matrix)[i][floatPixels.n+1]=0.0;
+                (floatPixels.matrix)[i][floatPixels.n+2]=0.0;
             }
-            pixels.n = pixels.n + 2;
+            floatPixels.n = floatPixels.n + 2;
         }
-        else if(pixels.n%3==2){
-            for(int i = 0; i<pixels.m; i++){
-                (pixels.matrix)[i][pixels.n+1]=0;
+        else if(floatPixels.n%3==2){
+            for(int i = 0; i<floatPixels.m; i++){
+                (floatPixels.matrix)[i][floatPixels.n+1]=0.0;
             }
-            pixels.n = pixels.n + 1;
+            floatPixels.n = floatPixels.n + 1;
         }
-        for(int i = 0; i<(pixels.m/3); i++){
-            for(int j = 0; j<(pixels.n/3); j++){
-                int higher = (pixels.matrix)[3*i][3*j];
-                if((pixels.matrix)[3*i+1][3*j] > higher){
-                    higher = (pixels.matrix)[3*i+1][3*j];
+        for(int i = 0; i<(floatPixels.m/3); i++){
+            for(int j = 0; j<(floatPixels.n/3); j++){
+                float higher = (floatPixels.matrix)[3*i][3*j];
+                if((floatPixels.matrix)[3*i+1][3*j] > higher){
+                    higher = (floatPixels.matrix)[3*i+1][3*j];
                 }
-                if((pixels.matrix)[3*i+2][3*j] > higher){
-                    higher = (pixels.matrix)[3*i+2][3*j];
+                if((floatPixels.matrix)[3*i+2][3*j] > higher){
+                    higher = (floatPixels.matrix)[3*i+2][3*j];
                 }
-                if((pixels.matrix)[3*i][3*j+1] > higher){
-                    higher = (pixels.matrix)[3*i][3*j+1];
+                if((floatPixels.matrix)[3*i][3*j+1] > higher){
+                    higher = (floatPixels.matrix)[3*i][3*j+1];
                 }
 
-                if((pixels.matrix)[3*i+1][3*j+1] > higher){
-                    higher = (pixels.matrix)[3*i+1][3*j+1];
+                if((floatPixels.matrix)[3*i+1][3*j+1] > higher){
+                    higher = (floatPixels.matrix)[3*i+1][3*j+1];
                 }
 
-                if((pixels.matrix)[3*i+2][3*j+1] > higher){
-                    higher = (pixels.matrix)[3*i+2][3*j+1];
+                if((floatPixels.matrix)[3*i+2][3*j+1] > higher){
+                    higher = (floatPixels.matrix)[3*i+2][3*j+1];
                 }
 
-                if((pixels.matrix)[3*i][3*j+2] > higher){
-                    higher = (pixels.matrix)[3*i][3*j+2];
+                if((floatPixels.matrix)[3*i][3*j+2] > higher){
+                    higher = (floatPixels.matrix)[3*i][3*j+2];
                 }
-                if((pixels.matrix)[3*i+1][3*j+2] > higher){
-                    higher = (pixels.matrix)[3*i+1][3*j+2];
+                if((floatPixels.matrix)[3*i+1][3*j+2] > higher){
+                    higher = (floatPixels.matrix)[3*i+1][3*j+2];
                 }
-                if((pixels.matrix)[3*i+2][3*j+2] > higher){
-                    higher = (pixels.matrix)[3*i+2][3*j+2];
+                if((floatPixels.matrix)[3*i+2][3*j+2] > higher){
+                    higher = (floatPixels.matrix)[3*i+2][3*j+2];
                 }
-                (pixels.matrix)[i][j]=higher;
+                (floatPixels.matrix)[i][j]=higher;
             }
         }
-        pixels.m = (pixels.m)/3;
-        pixels.n = (pixels.n)/3;*/
-        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        floatPixels.m = (floatPixels.m)/3;
+        floatPixels.n = (floatPixels.n)/3;
+        write(STDOUT_FILENO, &floatPixels, sizeof(floatPixelMatrix));
     }
     wait(NULL);
     return 0;

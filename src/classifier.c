@@ -23,17 +23,18 @@ int main(int argc, char **argv){
         }
     }
     
-    pixelMatrix pixels;
 
     for(int i = 0; i<cValue;i++){
-        read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-        /*int solution = 0;
-        int size = pixels.m * pixels.n;
+        //pixelMatrix pixels;
+        floatPixelMatrix floatPixels;
+        read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
+        int solution = 0;
+        int size = floatPixels.m * floatPixels.n;
         int threshold = (int)((nValue/100.0)*size);
         int count = 0;
-        for(int i = 0; i < pixels.m; i++){
-            for(int j = 0; j < pixels.n; j++){
-                if(pixels.matrix[i][j] == 0){
+        for(int i = 0; i < floatPixels.m; i++){
+            for(int j = 0; j < floatPixels.n; j++){
+                if(floatPixels.matrix[i][j] == 0.0){
                     count = count + 1;
                     if(count >= threshold){
                         solution = 1;
@@ -43,12 +44,12 @@ int main(int argc, char **argv){
             }
         }
         if(solution == 1){
-            write(STDOUT_FILENO, "yes", 3);
+            floatPixels.nearlyBlack = 1;
         }
         else{
-            write(STDOUT_FILENO, "no", 3);
-        }*/
-        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+            floatPixels.nearlyBlack = 0;
+        }
+        write(STDOUT_FILENO, &floatPixels, sizeof(floatPixelMatrix));
     }
     wait(NULL);
     return 0;

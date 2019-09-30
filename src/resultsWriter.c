@@ -6,8 +6,6 @@
 #include "main.h"
 
 int main(int argc, char **argv){
-    printf("AAAA K RABIA\n");
-
     int cValue = 0;
     int bFlag = 0;
     int flag;
@@ -25,30 +23,40 @@ int main(int argc, char **argv){
         }
     }
 
-    pixelMatrix pixels;
-
-    /*char nearlyblack[3];
+    
     if(bFlag == 1){
         printf("|   image   | nearly black |\n");
         printf("|-----------|--------------|\n");
         for(int i= 0; i<cValue; i++){
-            read(STDIN_FILENO, &nearlyblack, 3);
-            printf("|  imagen_%d |     %s       |\n",i+1,nearlyblack);
+            floatPixelMatrix floatPixels;
+            read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
+            if(floatPixels.nearlyBlack==1){
+                printf("|  imagen_%d |     yes      |\n",i+1);
+            }
+            else if(floatPixels.nearlyBlack==0){
+                printf("|  imagen_%d |      no      |\n",i+1);
+            }
         }
-    }*/
+    }
     
+    /*
     for(int i= 0; i<cValue; i++){
+        //pixelMatrix pixels;
+        floatPixelMatrix floatPixels;
         printf("read\n");
-        read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-        printf("(m,n): (%d,%d)\n", pixels.m,pixels.n);
-        for(int i = 0; i< pixels.m;i++){
-            for(int j = 0;j<pixels.n;j++){
-                printf("%d ", (pixels.matrix)[i][j]);
+        read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
+
+
+
+        printf("(m,n): (%d,%d)\n", floatPixels.m,floatPixels.n);
+        for(int i = 0; i< floatPixels.m;i++){
+            for(int j = 0;j<floatPixels.n;j++){
+                printf("%f ", (floatPixels.matrix)[i][j]);
             }
             printf("\n");
         }
     }
-    printf("CHAO\n");
+    */
     
     return 0;
 }

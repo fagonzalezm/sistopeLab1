@@ -19,18 +19,18 @@ int main(int argc, char **argv){
         }
     }
 
-    pixelMatrix pixels;
-
     for(int i= 0; i<cValue; i++){
-        read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-        /*for(int i = 0; i<pixels.m; i++){
-            for(int j = 0; j<pixels.n; j++){
-                if((pixels.matrix)[i][j]<0){
-                    (pixels.matrix)[i][j] = 0;
+        //pixelMatrix pixels;
+        floatPixelMatrix floatPixels;
+        read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
+        for(int i = 0; i<floatPixels.m; i++){
+            for(int j = 0; j<floatPixels.n; j++){
+                if((floatPixels.matrix)[i][j]<0.0){
+                    (floatPixels.matrix)[i][j] = 0;
                 }
             }
-        }*/
-        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        }
+        write(STDOUT_FILENO, &floatPixels, sizeof(floatPixelMatrix));
     }
     wait(NULL);
     return 0;

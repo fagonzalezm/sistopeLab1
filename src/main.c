@@ -82,9 +82,22 @@ pixelMatrix pngRead(char * fileName){
 }
 
 void pipeline(int cValue, char * mValue, int nValue, int bFlag){
-    printf("HOLI1\n");
     pid_t pid1, pid2, pid3, pid4, pid5;
     int  status1;
+
+    char o[10];
+    char p[10];
+    char q[10];
+    char r[10];
+    char s[10];
+    char t[10];
+    char u[10];
+    char v[10];
+    char w[10];
+
+    FILE * file = fopen(mValue, "r");
+    fscanf(file,"%s %s %s %s %s %s %s %s %s",o,p,q,r,s,t,u,v,w);
+    fclose(file);
 
     char bFlagStr[2];
     sprintf(bFlagStr, "%d", bFlag);
@@ -95,7 +108,7 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
     char mValueStr[100];
     strcpy(mValueStr, mValue);
 
-    char * argvConvolution[] ={"convolution","-c",cValueStr, NULL};
+    char * argvConvolution[] ={"convolution","-c",cValueStr,"-o",o,"-p",p,"-q",q,"-r",r,"-s",s,"-t",t,"-u",u,"-v",v,"-w",w,NULL};
     char * argvRectification[] ={"rectification","-c",cValueStr, NULL};
     char * argvPooling[] ={"pooling","-c",cValueStr, NULL};
     char * argvClassifier[] ={"classifier","-n", nValueStr,"-c",cValueStr, NULL};
@@ -337,7 +350,7 @@ int main(int argc, char **argv){
                 abort();
         }
     }
-    printf("cValue = %d, mValue = %s, nValue = %d, bFlag = %d\n", cValue, mValue, nValue, bFlag);
+    //printf("cValue = %d, mValue = %s, nValue = %d, bFlag = %d\n", cValue, mValue, nValue, bFlag);
     int index;
     for (index = optind; index < argc; index++){
         printf("No hay bandera para el argumento %s\n", argv[index]);
@@ -361,7 +374,6 @@ int main(int argc, char **argv){
         abort();
     }
     else{
-        printf("HOLI0\n");
         pipeline(cValue, mValue, nValue, bFlag);
     }
     return 0;
