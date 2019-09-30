@@ -7,21 +7,13 @@
 #include <string.h>
 #include "main.h"
 
+//E: Matriz contenedora del kernel/ Estructura que contiene alto, ancho y el valor de los pixeles.
+//Func: Se recorre la matriz de los valores de los pixeles aplicando el concepto de convolucion 
+//      haciendo uso de una matriz de numeros (kernel) para generar una nueva matriz normalizada.
+//S: Una matriz de flotantes que contiene los valores normalizados.
 floatPixelMatrix convolution(kernelMatrix kernel, pixelMatrix pixels){
 
-	//printf("kernel\n");
-	//int kernel[3][3] = {{kernel[0][0],kernel[0][1],kernel[0][2]},{kernel[1][0],kernel[1][1],kernel[1][2]},{kernel[2][0],kernel[2][1],kernel[2][2]}};
 	
-	//printf("%d %d %d\n",(kernel.matrix)[0][0],(kernel.matrix)[0][1],(kernel.matrix)[0][2]);
-	//printf("%d %d %d\n",(kernel.matrix)[1][0],(kernel.matrix)[1][1],(kernel.matrix)[1][2]);
-	//printf("%d %d %d\n",(kernel.matrix)[2][0],(kernel.matrix)[2][1],(kernel.matrix)[2][2]);
-
-	//int xn;
-	//int yn;
-	/*int** matrizAux = (int**) malloc(sizeof(int*)* matrizPix.m );
-	for(xn=0;xn<matrizPix.m;xn++){
-		matrizAux[xn] = (int*) malloc(sizeof(int) * matrizPix.n);
-	}*/
 	floatPixelMatrix floatPixels;
 	floatPixels.m = pixels.m;
 	floatPixels.n = pixels.n;
