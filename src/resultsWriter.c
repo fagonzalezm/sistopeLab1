@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 
     pixelMatrix pixels;
 
-    char nearlyblack[3];
+    /*char nearlyblack[3];
     if(bFlag == 1){
         printf("|   image   | nearly black |\n");
         printf("|-----------|--------------|\n");
@@ -35,8 +35,8 @@ int main(int argc, char **argv){
             read(STDIN_FILENO, &nearlyblack, 3);
             printf("|  imagen_%d |     %s       |\n",i+1,nearlyblack);
         }
-    }
-    /*
+    }*/
+    
     for(int i= 0; i<cValue; i++){
         printf("read\n");
         read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
@@ -49,6 +49,6 @@ int main(int argc, char **argv){
         }
     }
     printf("CHAO\n");
-    */
+    
     return 0;
 }

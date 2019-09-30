@@ -25,7 +25,7 @@ int main(int argc, char **argv){
     for(int i= 0; i<cValue; i++){
         read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
         
-        if(pixels.m%3==1){
+        /*if(pixels.m%3==1){
             for(int i = 0; i<pixels.n; i++){
                 (pixels.matrix)[pixels.m+1][i]=0;
                 (pixels.matrix)[pixels.m+2][i]=0;
@@ -85,9 +85,8 @@ int main(int argc, char **argv){
             }
         }
         pixels.m = (pixels.m)/3;
-        pixels.n = (pixels.n)/3;
+        pixels.n = (pixels.n)/3;*/
         write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
-        
     }
     wait(NULL);
     return 0;

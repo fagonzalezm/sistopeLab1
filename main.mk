@@ -1,7 +1,7 @@
 DIR_OUTPUT = ./bin
 IDIR =./include
 CC = gcc
-CFLAGS = -I$(IDIR)
+CFLAGS = -I$(IDIR) -lm -lpng -Wall
 
 ODIR=./src/obj
 LDIR =./lib
@@ -12,7 +12,7 @@ LIBS=
 _DEPS = main.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o ejemplo.o
+_OBJ = main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: $(CDIR)/%.c $(DEPS)

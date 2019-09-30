@@ -5,7 +5,8 @@ typedef struct words {
 typedef struct pixelMatrix{
 	int n;
 	int m;
-	int matrix[20][20];
+	int matrix[50][50];
 }pixelMatrix;
 
-void myPrintHelloMake(void);
+//pixelMatrix pngRead(char * fileName);
+//void pipeline(int cValue, char * mValue, int nValue, int bFlag);

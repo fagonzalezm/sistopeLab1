@@ -7,13 +7,84 @@
 #include <string.h>
 #include "main.h"
 
+#include <png.h>
+#include <errno.h>
+#include <stdarg.h>
+
 #define READ 0
 #define WRITE 1
 
 
+
+pixelMatrix pngRead(char * fileName){
+	//definicion de variables
+    png_structp	png_ptr;
+    png_infop info_ptr;
+    FILE * fp;
+    png_uint_32 ancho;
+    png_uint_32 alto;
+    int profundidadBit;
+    int tipoColor;
+    int metEntrelaz;
+    int metCompres;
+    int metFiltro;
+    int x;
+    png_bytepp rows;
+    pixelMatrix matrizPix;
+
+    //apertura del archivo (imagen) para lectura en binario
+    fp = fopen (fileName, "rb");
+    if (! fp) {
+		//printf("Error, el archivo no pudo ser abierto.\n");
+    }
+    //Se crea la estructura de lectura de PNG
+    png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (! png_ptr) {
+		//printf("No se pudo crear la estructura PNG de lectura.\n");
+    }
+    //Se crea la estructura de informacion de PNG
+    info_ptr = png_create_info_struct (png_ptr);
+    if (! png_ptr) {
+		//printf("No se pudo crear la estructura PNG de informacion.\n");
+    }
+    //Se inicializan las funciones de entrada y salida predeterminadas para PNG 
+    png_init_io (png_ptr, fp);
+    //Se lee toda la imagen en memoria
+    png_read_png (png_ptr, info_ptr, 0, 0);
+    //Se obtinene la informacion desde el fragmento IHDR de la imagen PNG
+    png_get_IHDR (png_ptr, info_ptr, & ancho, & alto, & profundidadBit,
+		  & tipoColor, & metEntrelaz, & metCompres,
+		  & metFiltro);
+    //Se obtiene una matriz e punteros que apuntan a los datos de pixeles para cada fila.
+    rows = png_get_rows (png_ptr, info_ptr);
+    int rowbytes;
+    //Se obtiene la cantidad de bytes necesarios para contener una fila de una imagen.
+    rowbytes = png_get_rowbytes (png_ptr, info_ptr);
+
+    matrizPix.m = alto;
+    matrizPix.n = ancho;
+    //Se recorren los punteros de la matriz pixel a pixel y se guardan en una estructura.
+    for (x = 0; x < alto; x++) {
+		int y;
+		png_bytep row;
+		row = rows[x];
+      for (y = 0; y < ancho; y++) {
+        png_byte pixel;
+        pixel = row[y];
+        //printf("%d", pixel);
+        (matrizPix.matrix)[x][y] = (int) pixel;
+        
+      }
+		//printf ("\n");
+    }
+    pclose(fp);
+   	return matrizPix;
+}
+
 void pipeline(int cValue, char * mValue, int nValue, int bFlag){
+    printf("HOLI1\n");
     pid_t pid1, pid2, pid3, pid4, pid5;
-    int  status1, status2, status3, status4, status5;
+    int  status1;
 
     char bFlagStr[2];
     sprintf(bFlagStr, "%d", bFlag);
@@ -24,8 +95,6 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
     char mValueStr[100];
     strcpy(mValueStr, mValue);
 
-    printf("mValueStr: %s\n",mValueStr);
-    printf("mValue: %s\n",mValue);
     char * argvConvolution[] ={"convolution","-c",cValueStr, NULL};
     char * argvRectification[] ={"rectification","-c",cValueStr, NULL};
     char * argvPooling[] ={"pooling","-c",cValueStr, NULL};
@@ -37,8 +106,6 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
     int * pipe3 = (int *)malloc(2*sizeof(int));
     int * pipe4 = (int *)malloc(2*sizeof(int));
     int * pipe5 = (int *)malloc(2*sizeof(int));
-
-    pixelMatrix pixels;
     pipe(pipe1);
     pipe(pipe2);
     pipe(pipe3);
@@ -96,7 +163,7 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
                     close(pipe5[WRITE]);
                     
                     //Pooling
-                    execvp("bin/pooling",argvConvolution);
+                    execvp("bin/pooling",argvPooling);
                 }
             }
             else{
@@ -133,7 +200,6 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
         }
     }
     else{
-        
         dup2(pipe1[WRITE],STDOUT_FILENO);
 
         close(pipe1[READ]);
@@ -147,6 +213,7 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
         close(pipe5[WRITE]);
 
         //Ejemplo leyendo archivo
+        /*
         FILE * fp;
         char aux[20];
         char index[14];
@@ -193,9 +260,19 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
             pixels.m = 0;
             pixels.n = 0;
             
+        }*/
+        
+        for(int i = 0; i<cValue; i++){
+            pixelMatrix pixels;
+            char fileName[20];
+            char index[14];
+            strcpy(fileName, "imagen_");
+            sprintf(index,"%d",i+1);
+            strcat(fileName,index);
+            pixels = pngRead(fileName);
+            write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
         }
     }
-
     wait(&status1);
     free(pipe1);
     pipe1 = NULL;
@@ -284,6 +361,7 @@ int main(int argc, char **argv){
         abort();
     }
     else{
+        printf("HOLI0\n");
         pipeline(cValue, mValue, nValue, bFlag);
     }
     return 0;

@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 
     for(int i = 0; i<cValue;i++){
         read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-        int solution = 0;
+        /*int solution = 0;
         int size = pixels.m * pixels.n;
         int threshold = (int)((nValue/100.0)*size);
         int count = 0;
@@ -47,8 +47,8 @@ int main(int argc, char **argv){
         }
         else{
             write(STDOUT_FILENO, "no", 3);
-        }
-        //write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        }*/
+        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
     }
     wait(NULL);
     return 0;

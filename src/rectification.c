@@ -23,13 +23,13 @@ int main(int argc, char **argv){
 
     for(int i= 0; i<cValue; i++){
         read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
-        for(int i = 0; i<pixels.m; i++){
+        /*for(int i = 0; i<pixels.m; i++){
             for(int j = 0; j<pixels.n; j++){
                 if((pixels.matrix)[i][j]<0){
                     (pixels.matrix)[i][j] = 0;
                 }
             }
-        }
+        }*/
         write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
     }
     wait(NULL);
