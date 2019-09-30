@@ -1,7 +1,7 @@
 DIR_OUTPUT = ./bin
 IDIR =./include
 CC = gcc
-CFLAGS = -I$(IDIR)
+CFLAGS = -I$(IDIR) -lm -lpng -Wall
 
 ODIR=./src/obj
 LDIR =./lib
