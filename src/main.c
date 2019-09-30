@@ -79,7 +79,7 @@ pixelMatrix pngRead(char * fileName){
     }
     fclose(fp);
 
-    png_destroy_read_struct(&png, &info, NULL);
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
    	return matrizPix;
 }
 
