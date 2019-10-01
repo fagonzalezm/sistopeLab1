@@ -5,6 +5,9 @@
 #include <string.h>
 #include "main.h"
 
+//Entradas: En argv se debe ingresar -c <Cantidad de imagenes>.
+//Funcionamiento: Primero, se leen las entradas del argv usando getopt. Luego, se realiza la rectificacion.
+//Salida: --
 int main(int argc, char **argv){
     int cValue = 0;
     int flag;
@@ -18,11 +21,12 @@ int main(int argc, char **argv){
             abort();
         }
     }
-
+    //Rectificacion
+    //Para cada imagen
     for(int i= 0; i<cValue; i++){
-        //pixelMatrix pixels;
         floatPixelMatrix floatPixels;
         read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
+        //Se eliminan los valores negativos
         for(int i = 0; i<floatPixels.m; i++){
             for(int j = 0; j<floatPixels.n; j++){
                 if((floatPixels.matrix)[i][j]<0.0){

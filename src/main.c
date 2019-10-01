@@ -15,7 +15,9 @@
 #define WRITE 1
 
 
-
+//Entradas: char* filename: Nombre de una imagen en formato .png en escala de grises
+//Funcionamiento: Lee una imagen y la guarda el largo, ancho y valor de sus pixeles en una matriz 
+//Salida: estructura pixelMatrix que contiene largo, ancho y matriz de pixeles de la imagen
 pixelMatrix pngRead(char * fileName){
 	//definicion de variables
     png_structp	png_ptr;
@@ -83,22 +85,29 @@ pixelMatrix pngRead(char * fileName){
    	return matrizPix;
 }
 
+//Entradas: int cValue: Entero positivo que indica la cantidad de imágenes a procesar
+//          char* mValue: Nombre del archivo que contiene el filtro de la convolucion
+//          int nValue: Entero positivo entre 0 y 100 que representa el umbral para definir si una imagen es nearlyblack o no
+//          int bFlag: 0 o 1 que determina si se muestra en el terminal los resultados de la evaluación nearlyblack (bFlag = 1: muestra los resultados) 
+//Funcionamiento: Primero prepara las entradas (argv) de requiere cada proceso. Luego, se crean los pipes y procesos, relacionandolos según corresponda. Finalmente, se libera memoria. A este proceso se le delega la lectura de imágenes
+//Salida: --
 void pipeline(int cValue, char * mValue, int nValue, int bFlag){
     pid_t pid1, pid2, pid3, pid4, pid5;
     int  status1;
 
-    char o[10];
-    char p[10];
-    char q[10];
-    char r[10];
-    char s[10];
-    char t[10];
-    char u[10];
-    char v[10];
-    char w[10];
+    //Preparación entrada (argv) de cada proceso
+    char convolutionFilterValueUpLeft[10];
+    char convolutionFilterValueUp[10];
+    char convolutionFilterValueUpRight[10];
+    char convolutionFilterValueLeft[10];
+    char convolutionFilterValueMiddle[10];
+    char convolutionFilterValueRight[10];
+    char convolutionFilterValueDownLeft[10];
+    char convolutionFilterValueDown[10];
+    char convolutionFilterValueDownRight[10];
 
     FILE * file = fopen(mValue, "r");
-    fscanf(file,"%s %s %s %s %s %s %s %s %s",o,p,q,r,s,t,u,v,w);
+    fscanf(file,"%s %s %s %s %s %s %s %s %s",convolutionFilterValueUpLeft,convolutionFilterValueUp,convolutionFilterValueUpRight,convolutionFilterValueLeft,convolutionFilterValueMiddle,convolutionFilterValueRight,convolutionFilterValueDownLeft,convolutionFilterValueDown,convolutionFilterValueDownRight);
     fclose(file);
 
     char bFlagStr[2];
@@ -110,12 +119,13 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
     char mValueStr[100];
     strcpy(mValueStr, mValue);
 
-    char * argvConvolution[] ={"convolution","-c",cValueStr,"-o",o,"-p",p,"-q",q,"-r",r,"-s",s,"-t",t,"-u",u,"-v",v,"-w",w,NULL};
+    char * argvConvolution[] ={"convolution","-c",cValueStr,"-o",convolutionFilterValueUpLeft,"-p",convolutionFilterValueUp,"-q",convolutionFilterValueUpRight,"-r",convolutionFilterValueLeft,"-s",convolutionFilterValueMiddle,"-t",convolutionFilterValueRight,"-u",convolutionFilterValueDownLeft,"-v",convolutionFilterValueDown,"-w",convolutionFilterValueDownRight,NULL};
     char * argvRectification[] ={"rectification","-c",cValueStr, NULL};
     char * argvPooling[] ={"pooling","-c",cValueStr, NULL};
     char * argvClassifier[] ={"classifier","-n", nValueStr,"-c",cValueStr, NULL};
     char * argvResultsWriter[] ={"resultsWriter","-b", bFlagStr,"-c",cValueStr, NULL};
 
+    //Creacion de los pipes y procesos
     int * pipe1 = (int *)malloc(2*sizeof(int));
     int * pipe2 = (int *)malloc(2*sizeof(int));
     int * pipe3 = (int *)malloc(2*sizeof(int));
@@ -227,68 +237,25 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
         close(pipe5[READ]);
         close(pipe5[WRITE]);
 
-        //Ejemplo leyendo archivo
-        /*
-        FILE * fp;
-        char aux[20];
-        char index[14];
-        char element[20];
-        char newline;
-        strcpy(aux, "imagen_");
-        for(int i = 0; i<cValue; i++){
-            int k = 0;
-            int l = 0;
-            int m = 0;
-            int n = 0;
-
-            sprintf(index,"%d",i+1);
-            strcat(aux,index);
-            fp = fopen(aux, "r");
-            int saltoDeLinea = 0;
-            while(!feof(fp)){
-                fscanf(fp,"%s", element);
-                (pixels.matrix)[k][l] = atoi(element);
-                l = l + 1;
-                newline = fgetc(fp);
-                if(saltoDeLinea == 0){
-                    n = n + 1;
-                }
-                if(newline == '\n'){
-                    l = 0;
-                    k = k + 1;
-                    m = m + 1;  
-                    saltoDeLinea = 1;
-                }
-
-            }
-
-            pixels.m = m;
-            pixels.n = n;
-            for(int i = 0; i<pixels.m;i++){
-                for(int j = 0; j<pixels.n;j++){
-                }
-            }
-            
-            strcpy(aux, "imagen_");
-            fclose(fp);
-            write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
-            pixels.m = 0;
-            pixels.n = 0;
-            
-        }*/
         
+        //Main (lectura de imagenes)
+        //Para cada imagaen
         for(int i = 0; i<cValue; i++){
             pixelMatrix pixels;
+            //Se define el nombre del archivo para la lectura
             char fileName[20];
             char index[14];
             strcpy(fileName, "imagen_");
             sprintf(index,"%d",i+1);
             strcat(fileName,index);
+            //Se lee el archivo de lectura
             pixels = pngRead(fileName);
             write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
         }
     }
+    //Se espera a que finalice la etapa de Convolcion
     wait(&status1);
+    //Se libera memoria
     free(pipe1);
     pipe1 = NULL;
     free(pipe2);
@@ -302,7 +269,12 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
 
 }
 
+
+//Entradas: En argv se debe ingresar -c <Cantidad de imagenes> -m <Nombre del archivo con el filtro> -n <Umbral para determinar nearlyblack> <-b si se requiere mostrar la evaluación de nearlyblack en el terminal>.
+//Funcionamiento: Primero se leen los argumentos del main usando getopt. Luego, se evaluan si los parametros son adecuados. Finalmente, se ejecuta el pipeline.
+//Salida: --
 int main(int argc, char **argv){
+    //Lectura de  las entradas del main
     int cValue=-1;
     char *mValue = NULL;
     int nValue=-1;
@@ -352,6 +324,7 @@ int main(int argc, char **argv){
                 abort();
         }
     }
+    //
     //printf("cValue = %d, mValue = %s, nValue = %d, bFlag = %d\n", cValue, mValue, nValue, bFlag);
     int index;
     for (index = optind; index < argc; index++){

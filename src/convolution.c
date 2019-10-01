@@ -7,32 +7,20 @@
 #include <string.h>
 #include "main.h"
 
+//Entradas:	kernelMatrix kernel:Representa el filtro
+//			pixelMatrix pixels: Respresenta una imagen 
+//Funcionamiento: Se recorre la matriz de los valores de los pixeles aplicando el concepto de convolucion haciendo uso de una matriz de numeros (kernel) para generar una nueva matriz normalizada.
+//Salida: floatPixelMatrix que representa una matriz de flotantes que contiene los valores normalizados.
 floatPixelMatrix convolution(kernelMatrix kernel, pixelMatrix pixels){
 
-	//printf("kernel\n");
-	//int kernel[3][3] = {{kernel[0][0],kernel[0][1],kernel[0][2]},{kernel[1][0],kernel[1][1],kernel[1][2]},{kernel[2][0],kernel[2][1],kernel[2][2]}};
-	
-	//printf("%d %d %d\n",(kernel.matrix)[0][0],(kernel.matrix)[0][1],(kernel.matrix)[0][2]);
-	//printf("%d %d %d\n",(kernel.matrix)[1][0],(kernel.matrix)[1][1],(kernel.matrix)[1][2]);
-	//printf("%d %d %d\n",(kernel.matrix)[2][0],(kernel.matrix)[2][1],(kernel.matrix)[2][2]);
-
-	//int xn;
-	//int yn;
-	/*int** matrizAux = (int**) malloc(sizeof(int*)* matrizPix.m );
-	for(xn=0;xn<matrizPix.m;xn++){
-		matrizAux[xn] = (int*) malloc(sizeof(int) * matrizPix.n);
-	}*/
 	floatPixelMatrix floatPixels;
 	floatPixels.m = pixels.m;
 	floatPixels.n = pixels.n;
-	//float matrizAux[600][600];
 
 	int fila;
 	int columna;
 	for(fila=0;fila<pixels.m;fila++){
-		//printf("Fila: %d ", fila);
 		for(columna=0;columna<pixels.n;columna++){
-			//printf("Columna: %d\n", columna);
 			float resultado = 0;
 			int s1 = 0;
 			int s2 = 0;
@@ -112,14 +100,15 @@ floatPixelMatrix convolution(kernelMatrix kernel, pixelMatrix pixels){
 			}
 			resultado = (s1 + s2 +s3 +s4 +s5 +s6 +s7 +s8 +s9);
 			(floatPixels.matrix)[fila][columna] = resultado / 9.0;
-			//printf("%f ", (floatPixels.matrix)[fila][columna]);
 		}
-		//printf("\n");
 	}
 
 	return floatPixels;
 }
 
+//Entradas: En argv se debe ingresar -c <Cantidad de imagenes> -o <Valor de la posicion (1,1) del filtro> -p <Valor de la posicion (1,2) del filtro> -1 <Valor de la posicion (1,3) del filtro> -r <Valor de la posicion (2,1) del filtro> .s <Valor de la posicion (2,2) del filtro> -t <Valor de la posicion (2,3) del filtro> -u <Valor de la posicion (3,1) del filtro> -v <Valor de la posicion (3,2) del filtro> -w <Valor de la posicion (3,3) del filtro>
+//Funcionamiento: Primero, se leen las entradas del argv usando getopt. Luego, se realiza la convolucion.
+//Salida: --
 int main(int argc, char **argv){
     int cValue = 0;
     int flag;
@@ -160,10 +149,11 @@ int main(int argc, char **argv){
             abort();
         }
     }
-
+	//Para cada imagen
     for(int i = 0; i<cValue;i++){
         pixelMatrix pixels;
         read(STDIN_FILENO, &pixels, sizeof(pixelMatrix));
+		//Se realiza la convolucion
         floatPixelMatrix floatPixels = convolution(kernel,pixels);
 
         write(STDOUT_FILENO, &floatPixels, sizeof(floatPixelMatrix));
