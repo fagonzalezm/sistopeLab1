@@ -12,7 +12,6 @@
 //Funcionamiento: Se recorre la matriz de los valores de los pixeles aplicando el concepto de convolucion haciendo uso de una matriz de numeros (kernel) para generar una nueva matriz normalizada.
 //Salida: floatPixelMatrix que representa una matriz de flotantes que contiene los valores normalizados.
 floatPixelMatrix convolution(kernelMatrix kernel, pixelMatrix pixels){
-
 	floatPixelMatrix floatPixels;
 	floatPixels.m = pixels.m;
 	floatPixels.n = pixels.n;

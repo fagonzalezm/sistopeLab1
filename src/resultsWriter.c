@@ -8,14 +8,21 @@
 #include <stdarg.h>
 #include "main.h"
 
-
+//E: Estructura bitmap_t que contiene los pixeles, ancho y alto de la imagen/ posicion en columnas/ posicion en filas.
+//Func: Extrae el pixel ubicado en la posicion (y,x).
+//S: pixel.
 static pixel_t * pixel_at (bitmap_t * bitmap, int x, int y)
 {
     return bitmap->pixels + bitmap->width * y + x;
 }
 
+//E: Estructura bitmap_t que contiene los pixeles, ancho y alto de la imagen/ string que contiene el nombre del archivo (imagen) de salida.
+//Func: Inicializa todas las estructuras presentes en un archivo PNG para posteriormente ser llenado con los valores 
+//      presentes en la estructura bitmap_t.
+//S: un entero que indica el estado de finalizacion de la función.  
 static int save_png_to_file (bitmap_t *bitmap, const char *path)
 {
+    //Definicion de variables.
     FILE * fp;
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
@@ -26,12 +33,12 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
     
     int pixel_size = 3;
     int depth = 8;
-    
+    //Apertura del archivo
     fp = fopen (path, "wb");
     if (! fp) {
         goto fopen_failed;
     }
-
+    //Inicializacion de las estructuras requeridas
     png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (png_ptr == NULL) {
         goto png_create_write_struct_failed;
@@ -47,7 +54,7 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
         goto png_failure;
     }
     
-
+    //Seteo del header del archivo PNG
     png_set_IHDR (png_ptr,
                   info_ptr,
                   bitmap->width,
@@ -58,7 +65,7 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
                   PNG_COMPRESSION_TYPE_DEFAULT,
                   PNG_FILTER_TYPE_DEFAULT);
     
-
+    //Recorrido y llenado de la matriz de pixeles con los datos de bitmap
     row_pointers = png_malloc (png_ptr, bitmap->height * sizeof (png_byte *));
     for (y = 0; y < bitmap->height; y++) {
         png_byte *row = 
@@ -70,7 +77,7 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
         }
     }
     
-
+    //Inicializacion, configuracion y escritura de la imagen.
     png_init_io (png_ptr, fp);
     png_set_rows (png_ptr, info_ptr, row_pointers);
     png_write_png (png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
@@ -78,7 +85,7 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
     
 
     status = 0;
-    
+    //liberacion de la memoria utilizada en el proceso.
     for (y = 0; y < bitmap->height; y++) {
         png_free (png_ptr, row_pointers[y]);
     }
@@ -93,16 +100,9 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
     return status;
 }
 
-
-
-static int pix (int value, int max)
-{
-    if (value < 0) {
-        return 0;
-    }
-    return (int) (256.0 *((double) (value)/(double) max));
-}
-
+//E: Matriz de flotantes que contienen los valores de los pixeles / String que indica el nombre de salida.
+//Func: Se prepara la estructura necesaria (bitmap_t) con los datos de la matriz de flotantes y se escribe la imagen.
+//S: entero que indica el estado del resultado de la función.
 int writeImage(floatPixelMatrix matrizPix, char * fileOut){
     bitmap_t pngOut;
     int xg;
