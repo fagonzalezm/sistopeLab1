@@ -5,6 +5,9 @@
 #include <string.h>
 #include "main.h"
 
+//Entradas: En argv se debe ingresar -c <Cantidad de imagenes> -n <Valor del umbral de negrura>.
+//Funcionamiento: Realiza la clasificacion. Primero, se leen las entradas del argv usando getopt. Luego, se realiza la clasificacion.
+//Salida: --
 int main(int argc, char **argv){
     int cValue = 0;
     int nValue = 0;
@@ -23,19 +26,23 @@ int main(int argc, char **argv){
         }
     }
     
-
+    //Clasificacion
+    //Por cada imagen
     for(int i = 0; i<cValue;i++){
         //pixelMatrix pixels;
         floatPixelMatrix floatPixels;
         read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
         int solution = 0;
+        //Se define el valor especifico del umbral
         int size = floatPixels.m * floatPixels.n;
         int threshold = (int)((nValue/100.0)*size);
+        //Se obtiene la cantidad de pixeles negros en la matriz de pixeles
         int count = 0;
         for(int i = 0; i < floatPixels.m; i++){
             for(int j = 0; j < floatPixels.n; j++){
                 if(floatPixels.matrix[i][j] == 0.0){
                     count = count + 1;
+                    //Si la cantidad de pixeles negros es igual al umbral se retorna 1 
                     if(count >= threshold){
                         solution = 1;
                         break;
@@ -43,6 +50,7 @@ int main(int argc, char **argv){
                 }
             }
         }
+        //Se define el valor nearlyBlack de la imagen
         if(solution == 1){
             floatPixels.nearlyBlack = 1;
         }

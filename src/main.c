@@ -271,7 +271,7 @@ void pipeline(int cValue, char * mValue, int nValue, int bFlag){
 
 
 //Entradas: En argv se debe ingresar -c <Cantidad de imagenes> -m <Nombre del archivo con el filtro> -n <Umbral para determinar nearlyblack> <-b si se requiere mostrar la evaluación de nearlyblack en el terminal>.
-//Funcionamiento: Primero se leen los argumentos del main usando getopt. Luego, se evaluan si los parametros son adecuados. Finalmente, se ejecuta el pipeline.
+//Funcionamiento: Realiza el pipeline. Primero, se leen los argumentos del main usando getopt. Luego, se evaluan si los parametros son adecuados. Finalmente, se ejecuta el pipeline, delegando la lectura de imagenes a este proceso.
 //Salida: --
 int main(int argc, char **argv){
     //Lectura de  las entradas del main

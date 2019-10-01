@@ -6,7 +6,7 @@
 #include "main.h"
 
 //Entradas: En argv se debe ingresar -c <Cantidad de imagenes>.
-//Funcionamiento: Primero, se leen las entradas del argv usando getopt. Luego, se realiza la rectificacion.
+//Funcionamiento: Realiza la rectificacion. Primero, se leen las entradas del argv usando getopt. Luego, se realiza la rectificacion.
 //Salida: --
 int main(int argc, char **argv){
     int cValue = 0;

@@ -106,7 +106,7 @@ floatPixelMatrix convolution(kernelMatrix kernel, pixelMatrix pixels){
 }
 
 //Entradas: En argv se debe ingresar -c <Cantidad de imagenes> -o <Valor de la posicion (1,1) del filtro> -p <Valor de la posicion (1,2) del filtro> -1 <Valor de la posicion (1,3) del filtro> -r <Valor de la posicion (2,1) del filtro> .s <Valor de la posicion (2,2) del filtro> -t <Valor de la posicion (2,3) del filtro> -u <Valor de la posicion (3,1) del filtro> -v <Valor de la posicion (3,2) del filtro> -w <Valor de la posicion (3,3) del filtro>
-//Funcionamiento: Primero, se leen las entradas del argv usando getopt. Luego, se realiza la convolucion.
+//Funcionamiento: Realiza la convolucion. Primero, se leen las entradas del argv usando getopt. Luego, se realiza la convolucion.
 //Salida: --
 int main(int argc, char **argv){
     int cValue = 0;

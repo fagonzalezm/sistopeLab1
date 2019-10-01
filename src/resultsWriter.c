@@ -8,18 +8,18 @@
 #include <stdarg.h>
 #include "main.h"
 
-//E: Estructura bitmap_t que contiene los pixeles, ancho y alto de la imagen/ posicion en columnas/ posicion en filas.
-//Func: Extrae el pixel ubicado en la posicion (y,x).
-//S: pixel.
+//Entrada: Estructura bitmap_t que contiene los pixeles, ancho y alto de la imagen/ posicion en columnas/ posicion en filas.
+//Funcionamiento: Extrae el pixel ubicado en la posicion (y,x).
+//Salida: pixel.
 static pixel_t * pixel_at (bitmap_t * bitmap, int x, int y)
 {
     return bitmap->pixels + bitmap->width * y + x;
 }
 
-//E: Estructura bitmap_t que contiene los pixeles, ancho y alto de la imagen/ string que contiene el nombre del archivo (imagen) de salida.
-//Func: Inicializa todas las estructuras presentes en un archivo PNG para posteriormente ser llenado con los valores 
+//Entrada: Estructura bitmap_t que contiene los pixeles, ancho y alto de la imagen/ string que contiene el nombre del archivo (imagen) de salida.
+//Funcionamiento: Inicializa todas las estructuras presentes en un archivo PNG para posteriormente ser llenado con los valores 
 //      presentes en la estructura bitmap_t.
-//S: un entero que indica el estado de finalizacion de la función.  
+//Salida: un entero que indica el estado de finalizacion de la función.  
 static int save_png_to_file (bitmap_t *bitmap, const char *path)
 {
     //Definicion de variables.
@@ -100,9 +100,9 @@ static int save_png_to_file (bitmap_t *bitmap, const char *path)
     return status;
 }
 
-//E: Matriz de flotantes que contienen los valores de los pixeles / String que indica el nombre de salida.
-//Func: Se prepara la estructura necesaria (bitmap_t) con los datos de la matriz de flotantes y se escribe la imagen.
-//S: entero que indica el estado del resultado de la función.
+//Entrada: Matriz de flotantes que contienen los valores de los pixeles / String que indica el nombre de salida.
+//Funcionamiento: Se prepara la estructura necesaria (bitmap_t) con los datos de la matriz de flotantes y se escribe la imagen.
+//Salida: entero que indica el estado del resultado de la función.
 int writeImage(floatPixelMatrix matrizPix, char * fileOut){
     bitmap_t pngOut;
     int xg;
@@ -136,7 +136,9 @@ int writeImage(floatPixelMatrix matrizPix, char * fileOut){
     free (pngOut.pixels);
     return status;
 }
-
+//Entradas: En argv se debe ingresar -c <Cantidad de imagenes> -b <1 o 0 dependiendo si se quiere mostrar la evaluacion nearlyblack en el terminal>.
+//Funcionamiento: Realiza la escritura de resultados. Primero, se leen las entradas del argv usando getopt. Luego, se realiza la escritura de resultados.
+//Salida: Escribe el resultado del pipeline en el archivo de salida. El formato del archivo de salida es out_n, donde n es el numero de la imagen.
 int main(int argc, char **argv){
     int cValue = 0;
     int bFlag = 0;
@@ -154,13 +156,15 @@ int main(int argc, char **argv){
             abort();
         }
     }
-
+    //Escritura de resultados
+    //Si se requiere mostrar la evaluacion de nearlyblack
     if(bFlag == 1){
         printf("|   image   | nearly black |\n");
         printf("|-----------|--------------|\n");
     }
-    
+    //Por cada imagen
     for(int i= 0; i<cValue; i++){
+        //Se define el valor del nombre del archivo de salida
         char fileName[20];
         char index[14];
         strcpy(fileName, "out_");
@@ -169,7 +173,7 @@ int main(int argc, char **argv){
 
         floatPixelMatrix floatPixels;
         read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
-
+        //Si se requiere mostrar la evaluacion de nearlyblack se muestra el resultado
         if(bFlag == 1){
             if(floatPixels.nearlyBlack==1){
                 printf("|  imagen_%d |     yes      |\n",i+1);
@@ -178,29 +182,9 @@ int main(int argc, char **argv){
                 printf("|  imagen_%d |      no      |\n",i+1);
             }
         }
+        //Se escribe el resultado del pipeline
         int status = writeImage(floatPixels, fileName);
 
     }
-    
-    
-    /*
-    for(int i= 0; i<cValue; i++){
-        //pixelMatrix pixels;
-        floatPixelMatrix floatPixels;
-        printf("read\n");
-        read(STDIN_FILENO, &floatPixels, sizeof(floatPixelMatrix));
-
-
-
-        printf("(m,n): (%d,%d)\n", floatPixels.m,floatPixels.n);
-        for(int i = 0; i< floatPixels.m;i++){
-            for(int j = 0;j<floatPixels.n;j++){
-                printf("%f ", (floatPixels.matrix)[i][j]);
-            }
-            printf("\n");
-        }
-    }
-    */
-    
     return 0;
 }

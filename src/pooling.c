@@ -6,7 +6,7 @@
 #include "main.h"
 
 //Entradas: En argv se debe ingresar -c <Cantidad de imagenes>.
-//Funcionamiento: Primero, se leen las entradas del argv usando getopt. Luego, se realiza el pooling.
+//Funcionamiento: Realiza el Pooling. Primero, se leen las entradas del argv usando getopt. Luego, se realiza el pooling.
 //Salida: --
 int main(int argc, char **argv){
     int cValue = 0;
